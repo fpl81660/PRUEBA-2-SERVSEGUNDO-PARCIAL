@@ -11,7 +11,7 @@ app.get("/",(req,res)=>
 
 app.get("/nuevaruta",(req,res)=>
 {
-    res.send("Hola este es el segundo end point");
+    res.send("prueba push");
 });
 
 
