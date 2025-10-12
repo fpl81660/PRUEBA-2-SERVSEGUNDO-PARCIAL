@@ -11,7 +11,7 @@ app.get("/",(req,res)=>
 
 app.get("/nuevaruta",(req,res)=>
 {
-    res.send("prueba push");
+    res.send("prueba push2");
 });
 
 
