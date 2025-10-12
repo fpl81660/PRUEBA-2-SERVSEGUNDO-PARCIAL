@@ -7,11 +7,12 @@ router.get('/', (req, res) => res.json(departamentos));
 
 // GET por ID
 router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id); // Cambiado de req.params.numDepartamento a req.params.id
-  const d = departamentos.find(dep => dep.numDepartamento === id);
-  if (!d) return res.status(404).json({ mensaje: 'Departamento no encontrado' });
-  res.json(d);
+  const {id} = req.params; // Cambiado de req.params.numDepartamento a req.params.id
+  const departament = departamentos.find((departament) => dep.numDepartamento == id);
+  if (!departament) return res.status(404).json({ mensaje: 'Departamento no encontrado' });
+  res.json(departament);
 });
+
 
 // POST
 router.post('/', (req, res) => {
