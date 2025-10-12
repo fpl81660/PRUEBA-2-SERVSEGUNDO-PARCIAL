@@ -1,4 +1,4 @@
-export const areas = [
+const areas = [
   { idArea: 1, nombre: "Ingeniería", edificio: "A" },
   { idArea: 2, nombre: "Administración", edificio: "B" },
   { idArea: 3, nombre: "Finanzas", edificio: "C" },
@@ -10,3 +10,4 @@ export const areas = [
   { idArea: 9, nombre: "Calidad", edificio: "I" },
   { idArea: 10, nombre: "Logística", edificio: "J" },
 ];
+module.exports = { areas };

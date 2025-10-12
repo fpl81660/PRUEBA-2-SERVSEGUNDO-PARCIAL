@@ -1,4 +1,4 @@
-export const departamentos = [
+const departamentos = [
   { numDepartamento: 1, nombre: "Desarrollo", idEncargado: 2, idArea: 5 },
   { numDepartamento: 2, nombre: "Soporte Técnico", idEncargado: 10, idArea: 5 },
   { numDepartamento: 3, nombre: "Contabilidad", idEncargado: 3, idArea: 3 },
@@ -10,3 +10,5 @@ export const departamentos = [
   { numDepartamento: 9, nombre: "Ingeniería de Proyectos", idEncargado: 5, idArea: 1 },
   { numDepartamento: 10, nombre: "Administración General", idEncargado: 1, idArea: 2 },
 ];
+
+module.exports = { departamentos };

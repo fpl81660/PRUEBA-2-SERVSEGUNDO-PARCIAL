@@ -1,4 +1,4 @@
-export const empleados = [
+const empleados = [
   { numEmpleado: 1, nombre: "Juan", apellido: "Mendoza", edad: 25, genero: "M", numDepartamento: 1 },
   { numEmpleado: 2, nombre: "María", apellido: "García", edad: 30, genero: "F", numDepartamento: 2 },
   { numEmpleado: 3, nombre: "Pedro", apellido: "Ramírez", edad: 28, genero: "M", numDepartamento: 3 },
@@ -10,3 +10,5 @@ export const empleados = [
   { numEmpleado: 9, nombre: "Héctor", apellido: "Díaz", edad: 33, genero: "M", numDepartamento: 9 },
   { numEmpleado: 10, nombre: "Isabel", apellido: "Flores", edad: 26, genero: "F", numDepartamento: 10 },
 ];
+
+module.exports = { empleados };

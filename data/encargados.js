@@ -1,4 +1,4 @@
-export const encargados = [
+const encargados = [
   { idEncargado: 1, nombre: "Laura Pérez", estudio: "Lic. en Administración", turno: "Matutino" },
   { idEncargado: 2, nombre: "Carlos Gómez", estudio: "Ing. en Sistemas", turno: "Vespertino" },
   { idEncargado: 3, nombre: "Marta López", estudio: "Lic. en Finanzas", turno: "Matutino" },
@@ -10,3 +10,4 @@ export const encargados = [
   { idEncargado: 9, nombre: "Ana Cabrera", estudio: "Lic. en Calidad", turno: "Matutino" },
   { idEncargado: 10, nombre: "José Ramírez", estudio: "Ing. en Software", turno: "Mixto" },
 ];
+module.exports = { encargados };

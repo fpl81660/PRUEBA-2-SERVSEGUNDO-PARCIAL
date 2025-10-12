@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-let empleados = require('../data/empleados');
+const { empleados } = require('../data/empleados');
 
 // GET todos
 router.get('/', (req, res) => {
