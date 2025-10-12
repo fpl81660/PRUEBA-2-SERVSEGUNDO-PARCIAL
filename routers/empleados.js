@@ -10,14 +10,14 @@ router.get('/', (req, res) => {
 // GET por ID
 router.get('/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const empleado = empleados.find(e => e.id === id);
+  const empleado = empleados.find(e => e.numEmpleado === id);
   if (!empleado) return res.status(404).json({ mensaje: 'Empleado no encontrado' });
   res.json(empleado);
 });
 
 // POST
 router.post('/', (req, res) => {
-  const nuevo = { id: empleados.length + 1, ...req.body };
+  const nuevo = { numEmpleado: empleados.length + 1, ...req.body };
   empleados.push(nuevo);
   res.status(201).json(nuevo);
 });
@@ -25,7 +25,7 @@ router.post('/', (req, res) => {
 // PUT
 router.put('/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  const index = empleados.findIndex(e => e.id === id);
+  const index = empleados.findIndex(e => e.numEmpleado === id);
   if (index === -1) return res.status(404).json({ mensaje: 'Empleado no encontrado' });
   empleados[index] = { ...empleados[index], ...req.body };
   res.json(empleados[index]);
@@ -34,7 +34,7 @@ router.put('/:id', (req, res) => {
 // DELETE
 router.delete('/:id', (req, res) => {
   const id = parseInt(req.params.id);
-  empleados = empleados.filter(e => e.id !== id);
+  empleados = empleados.filter(e => e.numEmpleado !== id);
   res.json({ mensaje: 'Empleado eliminado' });
 });
 
