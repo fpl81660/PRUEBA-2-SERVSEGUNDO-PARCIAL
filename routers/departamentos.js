@@ -1,5 +1,8 @@
 const express = require("express");
 const router = express.Router();
+let { empleados } = require("./empleados");
+let { areas } = require("./areas");
+let { encargados } = require("./encargados");
 
 let departamentos = [
   { id: 1, nombre: "Sistemas", idArea: 5, idEncargado: 1 },
@@ -13,36 +16,38 @@ let departamentos = [
   { id: 9, nombre: "Laboratorios", idArea: 2, idEncargado: 9 },
   { id: 10, nombre: "Central", idArea: 1, idEncargado: 10 },
 ];
+let nextId = 11;
 
-// CRUD completo
+// CRUD
 router.get("/", (req, res) => res.json(departamentos));
 router.get("/:id", (req, res) => {
   const dep = departamentos.find(d => d.id == req.params.id);
   if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
   res.json(dep);
 });
-
 router.post("/", (req, res) => {
-  const id = departamentos.length + 1;
-  const nuevo = { id, ...req.body };
+  const { nombre, idArea, idEncargado } = req.body;
+
+  if (!areas.some(a => a.id === idArea)) return res.status(400).json({ message: "El idArea no existe" });
+  if (!encargados.some(e => e.id === idEncargado)) return res.status(400).json({ message: "El idEncargado no existe" });
+
+  const nuevo = { id: nextId++, nombre, idArea, idEncargado };
   departamentos.push(nuevo);
   res.status(201).json({ message: "Departamento creado", data: nuevo });
 });
-
 router.put("/:id", (req, res) => {
   const dep = departamentos.find(d => d.id == req.params.id);
   if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
 
   const { id: nuevoId, nombre, idArea, idEncargado } = req.body;
 
+  if (idArea && !areas.some(a => a.id === idArea)) return res.status(400).json({ message: "El idArea no existe" });
+  if (idEncargado && !encargados.some(e => e.id === idEncargado)) return res.status(400).json({ message: "El idEncargado no existe" });
+
   if (nuevoId && nuevoId !== dep.id) {
     const existe = departamentos.some(d => d.id === nuevoId);
     if (existe) return res.status(400).json({ message: "El ID ya existe" });
-
-    // actualizar relación en empleados
-    const { empleados } = require("./empleados");
     empleados.forEach(e => { if(e.idDepartamento === dep.id) e.idDepartamento = nuevoId; });
-
     dep.id = nuevoId;
   }
 
@@ -52,16 +57,12 @@ router.put("/:id", (req, res) => {
 
   res.json({ message: "Departamento actualizado", data: dep });
 });
-
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const dep = departamentos.find(d => d.id == id);
   if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
-
-  const { empleados } = require("./empleados");
   const usado = empleados.some(e => e.idDepartamento == id);
   if (usado) return res.status(400).json({ message: "No se puede eliminar: departamento tiene empleados" });
-
   departamentos = departamentos.filter(d => d.id != id);
   res.json({ message: "Departamento eliminado correctamente" });
 });
