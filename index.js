@@ -12,7 +12,7 @@ app.get("/", (req, res) => {
       <h1 style="color: #2d89ef;">🚀 Servidor corriendo correctamente</h1>
       <h2 style="color: #333;">🌐 URL: <a href="http://localhost:3000" style="color:#2d89ef;">http://localhost:3000</a></h2>
       <p style="color: #666;">✅ Puedes acceder a las rutas:
-        <br>/areas | /departamentos | /encargados | /empleados
+        <br>/areas | /departamentos | /encargados | /empleados</br>
       </p>
     </body>
   `);

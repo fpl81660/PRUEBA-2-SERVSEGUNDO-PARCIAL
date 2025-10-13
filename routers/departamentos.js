@@ -25,45 +25,106 @@ router.get("/:id", (req, res) => {
   if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
   res.json(dep);
 });
+
+// routers/departamentos.js
+
 router.post("/", (req, res) => {
   const { nombre, idArea, idEncargado } = req.body;
 
-  if (!areas.some(a => a.id === idArea)) return res.status(400).json({ message: "El idArea no existe" });
-  if (!encargados.some(e => e.id === idEncargado)) return res.status(400).json({ message: "El idEncargado no existe" });
+  // Validar que el nombre no esté vacío
+  if (!nombre) {
+    return res.status(400).json({ message: "El campo 'nombre' es obligatorio." });
+  }
 
-  const nuevo = { id: nextId++, nombre, idArea, idEncargado };
+  // 1. Validar idArea solo si se proporciona
+  if (idArea && !areas.some(a => a.id === idArea)) {
+    return res.status(400).json({ message: "El idArea proporcionado no existe." });
+  }
+
+  // 2. Validar idEncargado solo si se proporciona
+  if (idEncargado && !encargados.some(e => e.id === idEncargado)) {
+    return res.status(400).json({ message: "El idEncargado proporcionado no existe." });
+  }
+
+  // 3. Crear el nuevo objeto, asignando null si los IDs no vienen
+  const nuevo = {
+    id: nextId++,
+    nombre,
+    idArea: idArea || null,
+    idEncargado: idEncargado || null,
+  };
+
   departamentos.push(nuevo);
   res.status(201).json({ message: "Departamento creado", data: nuevo });
 });
+
+// routers/departamentos.js
+
 router.put("/:id", (req, res) => {
   const dep = departamentos.find(d => d.id == req.params.id);
   if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
 
   const { id: nuevoId, nombre, idArea, idEncargado } = req.body;
 
-  if (idArea && !areas.some(a => a.id === idArea)) return res.status(400).json({ message: "El idArea no existe" });
-  if (idEncargado && !encargados.some(e => e.id === idEncargado)) return res.status(400).json({ message: "El idEncargado no existe" });
+  // Validar idArea solo si se proporciona y no es null
+  if (idArea && !areas.some(a => a.id === idArea)) {
+    return res.status(400).json({ message: "El idArea no existe" });
+  }
+  
+  // Validar idEncargado solo si se proporciona y no es null
+  if (idEncargado && !encargados.some(e => e.id === idEncargado)) {
+    return res.status(400).json({ message: "El idEncargado no existe" });
+  }
 
+  // Lógica para actualizar el ID del departamento (se mantiene igual)
   if (nuevoId && nuevoId !== dep.id) {
-    const existe = departamentos.some(d => d.id === nuevoId);
-    if (existe) return res.status(400).json({ message: "El ID ya existe" });
+    if (departamentos.some(d => d.id === nuevoId)) {
+      return res.status(400).json({ message: "El ID ya existe" });
+    }
     empleados.forEach(e => { if(e.idDepartamento === dep.id) e.idDepartamento = nuevoId; });
     dep.id = nuevoId;
   }
 
+  // Actualizar los campos
   if (nombre) dep.nombre = nombre;
-  if (idArea) dep.idArea = idArea;
-  if (idEncargado) dep.idEncargado = idEncargado;
+  
+  // Usamos hasOwnProperty para permitir explícitamente asignar `null`
+  if (req.body.hasOwnProperty('idArea')) {
+    dep.idArea = idArea;
+  }
+  if (req.body.hasOwnProperty('idEncargado')) {
+    dep.idEncargado = idEncargado;
+  }
 
   res.json({ message: "Departamento actualizado", data: dep });
 });
+// routers/departamentos.js
+
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const dep = departamentos.find(d => d.id == id);
-  if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
-  const usado = empleados.some(e => e.idDepartamento == id);
-  if (usado) return res.status(400).json({ message: "No se puede eliminar: departamento tiene empleados" });
-  departamentos = departamentos.filter(d => d.id != id);
+  const depIndex = departamentos.findIndex(d => d.id == id);
+
+  // 1. Verificar si el departamento existe
+  if (depIndex === -1) {
+    return res.status(404).json({ message: "Departamento no encontrado" });
+  }
+
+  const dep = departamentos[depIndex];
+
+  // 2. Verificar si tiene empleados asignados
+  const usadoPorEmpleado = empleados.some(e => e.idDepartamento == id);
+  if (usadoPorEmpleado) {
+    return res.status(400).json({ message: "No se puede eliminar: el departamento tiene empleados asignados." });
+  }
+
+  // 3. ¡Nueva Verificación! Verificar si tiene un encargado
+  // Si 'idEncargado' tiene un valor (no es null o undefined), no se puede borrar.
+  if (dep.idEncargado) {
+    return res.status(400).json({ message: "No se puede eliminar: el departamento ya tiene un encargado." });
+  }
+
+  // 4. Si pasa todas las validaciones, se elimina
+  departamentos.splice(depIndex, 1);
   res.json({ message: "Departamento eliminado correctamente" });
 });
 

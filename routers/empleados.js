@@ -43,10 +43,17 @@ router.put("/:id", (req, res) => {
   res.json({ message: "Empleado actualizado", data: emp });
 });
 
+
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  empleados = empleados.filter(e => e.id != id);
-  res.json({ message: "Empleado eliminado correctamente" });
+  const employeeIndex = empleados.findIndex(e => e.id == id);
+
+  if (employeeIndex > -1) {
+    empleados.splice(employeeIndex, 1);
+    res.json({ message: "Empleado eliminado correctamente" });
+  } else {
+    res.status(404).json({ message: "Empleado no encontrado" });
+  }
 });
 
 module.exports = router;
