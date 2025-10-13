@@ -1,39 +1,69 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-let {areas} = require('../data/areas');
 
-// GET todos
-router.get('/', (req, res) => res.json(areas));
+let areas = [
+  { id: 1, nombre: "Edificio Central", edificio: "A" },
+  { id: 2, nombre: "Laboratorios", edificio: "B" },
+  { id: 3, nombre: "Administración", edificio: "C" },
+  { id: 4, nombre: "Finanzas", edificio: "D" },
+  { id: 5, nombre: "Sistemas", edificio: "E" },
+  { id: 6, nombre: "Comunicaciones", edificio: "F" },
+  { id: 7, nombre: "Producción", edificio: "G" },
+  { id: 8, nombre: "Compras", edificio: "H" },
+  { id: 9, nombre: "Investigación", edificio: "I" },
+  { id: 10, nombre: "Recursos Humanos", edificio: "J" },
+];
+
+// GET todas
+router.get("/", (req, res) => res.json(areas));
 
 // GET por ID
-router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const area = areas.find(a => a.idArea === id);
-  if (!area) return res.status(404).json({ mensaje: 'Área no encontrada' });
+router.get("/:id", (req, res) => {
+  const area = areas.find(a => a.id == req.params.id);
+  if (!area) return res.status(404).json({ message: "Área no encontrada" });
   res.json(area);
 });
 
-// POST
-router.post('/', (req, res) => {
-  const nueva = { idArea: areas.length + 1, ...req.body };
+// POST crear
+router.post("/", (req, res) => {
+  const id = areas.length + 1;
+  const { nombre, edificio } = req.body;
+  const nueva = { id, nombre, edificio };
   areas.push(nueva);
-  res.status(201).json(nueva);
+  res.status(201).json({ message: "Área creada", data: nueva });
 });
 
-// PUT
-router.put('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = areas.findIndex(a => a.idArea === id);
-  if (index === -1) return res.status(404).json({ mensaje: 'Área no encontrada' });
-  areas[index] = { ...areas[index], ...req.body };
-  res.json(areas[index]);
+// PUT actualizar (puede cambiar id y datos)
+router.put("/:id", (req, res) => {
+  const area = areas.find(a => a.id == req.params.id);
+  if (!area) return res.status(404).json({ message: "Área no encontrada" });
+
+  const { id: nuevoId, nombre, edificio } = req.body;
+  if (nuevoId && nuevoId !== area.id) {
+    const existe = areas.some(a => a.id === nuevoId);
+    if (existe) return res.status(400).json({ message: "El ID ya existe" });
+    area.id = nuevoId;
+  }
+
+  if (nombre) area.nombre = nombre;
+  if (edificio) area.edificio = edificio;
+
+  res.json({ message: "Área actualizada", data: area });
 });
 
-// DELETE
-router.delete('/:id', (req, res) => {
+// DELETE solo si no afecta departamentos
+router.delete("/:id", (req, res) => {
+  const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
-  areas = areas.filter(a => a.idArea !== id);
-  res.json({ mensaje: 'Área eliminada' });
+  const area = areas.find(a => a.id == id);
+
+  if (!area) return res.status(404).json({ message: "Área no encontrada" });
+  const usada = departamentos.some(d => d.idArea == id);
+  if (usada) return res.status(400).json({ message: "No se puede eliminar: área vinculada a departamentos" });
+
+  areas = areas.filter(a => a.id != id);
+  res.json({ message: "Área eliminada correctamente" });
 });
 
 module.exports = router;
+module.exports.areas = areas;

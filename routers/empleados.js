@@ -1,41 +1,53 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { empleados } = require('../data/empleados');
 
-// GET todos
-router.get('/', (req, res) => {
-  res.json(empleados);
+let empleados = [
+  { id: 1, nombre: "Ana", apellido: "Gómez", edad: 30, genero: "F", idDepartamento: 1 },
+  { id: 2, nombre: "Luis", apellido: "Pérez", edad: 25, genero: "M", idDepartamento: 2 },
+  { id: 3, nombre: "Marta", apellido: "Luna", edad: 28, genero: "F", idDepartamento: 3 },
+  { id: 4, nombre: "Carlos", apellido: "Reyes", edad: 35, genero: "M", idDepartamento: 4 },
+  { id: 5, nombre: "Lucía", apellido: "Ruiz", edad: 29, genero: "F", idDepartamento: 5 },
+  { id: 6, nombre: "Hugo", apellido: "Flores", edad: 32, genero: "M", idDepartamento: 6 },
+  { id: 7, nombre: "Rosa", apellido: "Díaz", edad: 27, genero: "F", idDepartamento: 7 },
+  { id: 8, nombre: "Andrés", apellido: "Salas", edad: 31, genero: "M", idDepartamento: 8 },
+  { id: 9, nombre: "Paula", apellido: "López", edad: 33, genero: "F", idDepartamento: 9 },
+  { id: 10, nombre: "David", apellido: "Ortiz", edad: 26, genero: "M", idDepartamento: 10 },
+];
+
+// CRUD completo
+router.get("/", (req, res) => res.json(empleados));
+router.get("/:id", (req, res) => {
+  const emp = empleados.find(e => e.id == req.params.id);
+  if (!emp) return res.status(404).json({ message: "Empleado no encontrado" });
+  res.json(emp);
 });
 
-// GET por ID
-router.get('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const empleado = empleados.find(e => e.numEmpleado === id);
-  if (!empleado) return res.status(404).json({ mensaje: 'Empleado no encontrado' });
-  res.json(empleado);
-});
-
-// POST
-router.post('/', (req, res) => {
-  const nuevo = { numEmpleado: empleados.length + 1, ...req.body };
+router.post("/", (req, res) => {
+  const id = empleados.length + 1;
+  const nuevo = { id, ...req.body };
   empleados.push(nuevo);
-  res.status(201).json(nuevo);
+  res.status(201).json({ message: "Empleado creado", data: nuevo });
 });
 
-// PUT
-router.put('/:id', (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = empleados.findIndex(e => e.numEmpleado === id);
-  if (index === -1) return res.status(404).json({ mensaje: 'Empleado no encontrado' });
-  empleados[index] = { ...empleados[index], ...req.body };
-  res.json(empleados[index]);
+router.put("/:id", (req, res) => {
+  const emp = empleados.find(e => e.id == req.params.id);
+  if (!emp) return res.status(404).json({ message: "Empleado no encontrado" });
+
+  const { nombre, apellido, edad, genero, idDepartamento } = req.body;
+  if (nombre) emp.nombre = nombre;
+  if (apellido) emp.apellido = apellido;
+  if (edad) emp.edad = edad;
+  if (genero) emp.genero = genero;
+  if (idDepartamento) emp.idDepartamento = idDepartamento;
+
+  res.json({ message: "Empleado actualizado", data: emp });
 });
 
-// DELETE
-router.delete('/:id', (req, res) => {
+router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  empleados = empleados.filter(e => e.numEmpleado !== id);
-  res.json({ mensaje: 'Empleado eliminado' });
+  empleados = empleados.filter(e => e.id != id);
+  res.json({ message: "Empleado eliminado correctamente" });
 });
 
 module.exports = router;
+module.exports.empleados = empleados;

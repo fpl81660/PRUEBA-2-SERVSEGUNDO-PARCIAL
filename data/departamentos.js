@@ -8,7 +8,7 @@ const departamentos = [
   { numDepartamento: 7, nombre: "Logística y Transporte", idEncargado: 8, idArea: 10 },
   { numDepartamento: 8, nombre: "Calidad de Procesos", idEncargado: 9, idArea: 9 },
   { numDepartamento: 9, nombre: "Ingeniería de Proyectos", idEncargado: 5, idArea: 1 },
-  { numDepartamento: 10, nombre: "Administración General", idEncargado: 1, idArea: 2 },
+  { numDepartamento: 10, nombre: "Administración General", idEncargado: 1, idArea: 2 }
 ];
 
 module.exports = { departamentos };

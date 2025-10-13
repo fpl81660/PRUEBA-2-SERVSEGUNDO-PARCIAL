@@ -1,17 +1,20 @@
-const express = require('express');
+const express = require("express");
+const router = express.Router();
 
-const empleadosRouter = require('./empleados');
-const departamentosRouter = require('./departamentos');
-const encargadosRouter = require('./encargados');
-const areasRouter = require('./areas');
+const areasRouter = require("./areas");
+const departamentosRouter = require("./departamentos");
+const empleadosRouter = require("./empleados");
+const encargadosRouter = require("./encargados");
 
-function routerApi(app) {
-  // ya no hay "api/v1"
-  app.use('/empleados', empleadosRouter);
-  app.use('/departamentos', departamentosRouter);
-  app.use('/encargados', encargadosRouter);
-  app.use('/areas', areasRouter);
-}
+// Hacemos visibles los arreglos globalmente
+global.areas = areasRouter.areas;
+global.departamentos = departamentosRouter.departamentos;
+global.encargados = encargadosRouter.encargados;
+global.empleados = empleadosRouter.empleados;
 
-module.exports = routerApi;
+router.use("/areas", areasRouter);
+router.use("/departamentos", departamentosRouter);
+router.use("/empleados", empleadosRouter);
+router.use("/encargados", encargadosRouter);
 
+module.exports = router;
