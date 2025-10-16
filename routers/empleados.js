@@ -26,18 +26,31 @@ router.get("/:id", (req, res) => {
    res.json(emp); 
 });
 
+// ... (código anterior)
+
 router.post("/", (req, res) => {
-  const { idDepartamento } = req.body;
+  const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
   // ✅ Validación para el límite de departamentos
   if (idDepartamento && idDepartamento.length > 3) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
   }
 
-  const nuevo = { id: nextId++, ...req.body };
+  // Se crea el objeto manualmente
+  const nuevo = {
+    id: nextId++,
+    nombre: nombre,
+    apellido: apellido,
+    edad: edad,
+    genero: genero,
+    idDepartamento: idDepartamento
+  };
+
   empleados.push(nuevo);
   res.status(201).json({ message: "Empleado creado", data: nuevo });
 });
+
+// ... (El resto del código permanece igual)
 
 router.put("/:id", (req, res) => {
   const emp = empleados.find(e => e.id == req.params.id);

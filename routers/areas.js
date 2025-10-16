@@ -52,18 +52,30 @@ router.put("/:id", (req, res) => {
 });
 
 // DELETE solo si no afecta departamentos
+// ... (código anterior)
+
+// DELETE solo si no afecta departamentos
 router.delete("/:id", (req, res) => {
   const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
-  const area = areas.find(a => a.id == id);
 
-  if (!area) return res.status(404).json({ message: "Área no encontrada" });
+  // Se busca el índice del área
+  const areaIndex = areas.findIndex(a => a.id == id);
+
+  if (areaIndex === -1) {
+    return res.status(404).json({ message: "Área no encontrada" });
+  }
+
   const usada = departamentos.some(d => d.idArea == id);
-  if (usada) return res.status(400).json({ message: "No se puede eliminar: área vinculada a departamentos" });
+  if (usada) {
+    return res.status(400).json({ message: "No se puede eliminar: área vinculada a departamentos" });
+  }
 
-  areas = areas.filter(a => a.id != id);
+  // Se elimina el área usando splice
+  areas.splice(areaIndex, 1);
   res.json({ message: "Área eliminada correctamente" });
 });
+
 
 module.exports = router;
 module.exports.areas = areas;

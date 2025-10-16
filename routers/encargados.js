@@ -25,7 +25,13 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const nuevo = { id: nextId++, ...req.body }; // 👈 Lógica de ID autoincremental
+  // Se crea el objeto sin el operador '...'
+  const nuevo = {
+    id: nextId++,
+    nombre: req.body.nombre,
+    estudio: req.body.estudio,
+    turno: req.body.turno
+  };
   encargados.push(nuevo);
   res.status(201).json({ message: "Encargado creado", data: nuevo });
 });
@@ -50,15 +56,26 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", (req, res) => {
   const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
-  const enc = encargados.find(e => e.id == id);
 
-  if (!enc) return res.status(404).json({ message: "Encargado no encontrado" });
+  // Se busca el índice en lugar del objeto
+  const encIndex = encargados.findIndex(e => e.id == id);
+
+  if (encIndex === -1) {
+    return res.status(404).json({ message: "Encargado no encontrado" });
+  }
+
   const usado = departamentos.some(d => d.idEncargado == id);
-  if (usado) return res.status(400).json({ message: "No se puede eliminar: encargado vinculado a un departamento" });
+  if (usado) {
+    return res.status(400).json({ message: "No se puede eliminar: encargado vinculado a un departamento" });
+  }
 
-  encargados = encargados.filter(e => e.id != id);
+  // Se usa splice para eliminar por índice
+  encargados.splice(encIndex, 1);
   res.json({ message: "Encargado eliminado correctamente" });
 });
+
+module.exports = router;
+module.exports.encargados = encargados;
 
 module.exports = router;
 module.exports.encargados = encargados;
