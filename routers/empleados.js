@@ -13,7 +13,7 @@ let empleados = [
   { id: 9, nombre: "Paula", apellido: "López", edad: 33, genero: "F", idDepartamento: [9, 10] },
   { id: 10, nombre: "David", apellido: "Ortiz", edad: 26, genero: "M", idDepartamento: [10] },
 ];
-let nextId = 11; // 👈 Variable para el siguiente ID
+let nextId = 11;
 
 // CRUD completo
 router.get("/", (req, res) => res.json(empleados));
@@ -27,7 +27,14 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const nuevo = { id: nextId++, ...req.body }; // 👈 Lógica de ID autoincremental
+  const { idDepartamento } = req.body;
+
+  // ✅ Validación para el límite de departamentos
+  if (idDepartamento && idDepartamento.length > 3) {
+    return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
+  }
+
+  const nuevo = { id: nextId++, ...req.body };
   empleados.push(nuevo);
   res.status(201).json({ message: "Empleado creado", data: nuevo });
 });
@@ -37,6 +44,12 @@ router.put("/:id", (req, res) => {
   if (!emp) return res.status(404).json({ message: "Empleado no encontrado" });
 
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
+
+  // ✅ Validación para el límite de departamentos
+  if (idDepartamento && idDepartamento.length > 3) {
+    return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
+  }
+
   if (nombre) emp.nombre = nombre;
   if (apellido) emp.apellido = apellido;
   if (edad) emp.edad = edad;
@@ -45,6 +58,7 @@ router.put("/:id", (req, res) => {
 
   res.json({ message: "Empleado actualizado", data: emp });
 });
+
 
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
