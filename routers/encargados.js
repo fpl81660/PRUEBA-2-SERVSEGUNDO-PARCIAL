@@ -16,6 +16,7 @@ let encargados = [
 
 // CRUD completo
 router.get("/", (req, res) => res.json(encargados));
+
 router.get("/:id", (req, res) => {
   const enc = encargados.find(e => e.id == req.params.id);
   if (!enc) return res.status(404).json({ message: "Encargado no encontrado" });
