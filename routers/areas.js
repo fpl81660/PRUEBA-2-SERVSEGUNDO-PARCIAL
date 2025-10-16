@@ -13,6 +13,7 @@ let areas = [
   { id: 9, nombre: "Investigación", edificio: "I" },
   { id: 10, nombre: "Recursos Humanos", edificio: "J" },
 ];
+let nextId = 11; // 👈 Variable para el siguiente ID
 
 // GET todas
 router.get("/", (req, res) => res.json(areas));
@@ -26,9 +27,8 @@ router.get("/:id", (req, res) => {
 
 // POST crear
 router.post("/", (req, res) => {
-  const id = areas.length + 1;
   const { nombre, edificio } = req.body;
-  const nueva = { id, nombre, edificio };
+  const nueva = { id: nextId++, nombre, edificio }; // 👈 Lógica de ID autoincremental
   areas.push(nueva);
   res.status(201).json({ message: "Área creada", data: nueva });
 });

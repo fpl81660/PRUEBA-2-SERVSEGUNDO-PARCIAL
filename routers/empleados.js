@@ -1,9 +1,8 @@
-
 const express = require("express");
 const router = express.Router(); 
 
 let empleados = [
-{ id: 1, nombre: "Ana", apellido: "Gómez", edad: 30, genero: "F", idDepartamento: [1, 2, null] },
+  { id: 1, nombre: "Ana", apellido: "Gómez", edad: 30, genero: "F", idDepartamento: [1, 2, null] },
   { id: 2, nombre: "Luis", apellido: "Pérez", edad: 25, genero: "M", idDepartamento: [2, 3] },
   { id: 3, nombre: "Marta", apellido: "Luna", edad: 28, genero: "F", idDepartamento: [3] },
   { id: 4, nombre: "Carlos", apellido: "Reyes", edad: 35, genero: "M", idDepartamento: [4, 5, 6] },
@@ -14,6 +13,7 @@ let empleados = [
   { id: 9, nombre: "Paula", apellido: "López", edad: 33, genero: "F", idDepartamento: [9, 10] },
   { id: 10, nombre: "David", apellido: "Ortiz", edad: 26, genero: "M", idDepartamento: [10] },
 ];
+let nextId = 11; // 👈 Variable para el siguiente ID
 
 // CRUD completo
 router.get("/", (req, res) => res.json(empleados));
@@ -26,10 +26,8 @@ router.get("/:id", (req, res) => {
    res.json(emp); 
 });
 
-//empleados.find(e => e.idDepartamento == idDepartamento==null
 router.post("/", (req, res) => {
-  const id = empleados.length + 1;
-  const nuevo = { id, ...req.body };
+  const nuevo = { id: nextId++, ...req.body }; // 👈 Lógica de ID autoincremental
   empleados.push(nuevo);
   res.status(201).json({ message: "Empleado creado", data: nuevo });
 });
@@ -47,7 +45,6 @@ router.put("/:id", (req, res) => {
 
   res.json({ message: "Empleado actualizado", data: emp });
 });
-
 
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);

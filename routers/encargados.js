@@ -13,6 +13,7 @@ let encargados = [
   { id: 9, nombre: "Ernesto", estudio: "Ingeniero", turno: "Nocturno" },
   { id: 10, nombre: "Mónica", estudio: "Técnica", turno: "Matutino" },
 ];
+let nextId = 11; // 👈 Variable para el siguiente ID
 
 // CRUD completo
 router.get("/", (req, res) => res.json(encargados));
@@ -24,8 +25,7 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  const id = encargados.length + 1;
-  const nuevo = { id, ...req.body };
+  const nuevo = { id: nextId++, ...req.body }; // 👈 Lógica de ID autoincremental
   encargados.push(nuevo);
   res.status(201).json({ message: "Encargado creado", data: nuevo });
 });
