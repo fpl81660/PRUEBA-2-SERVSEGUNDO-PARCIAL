@@ -6,7 +6,7 @@ let { encargados } = require("./encargados");
 
 let departamentos = [
   { id: 1, nombre: "Sistemas", idArea: 5, idEncargado: 1 },
-  { id: 2, nombre: "Finanzas", idArea: 4, idEncargado: 2 },
+  { id: 2, nombre: "Finanzas", idArea: 4, idEncargado: 2 }, 
   { id: 3, nombre: "Recursos Humanos", idArea: 10, idEncargado: 3 },
   { id: 4, nombre: "Administración", idArea: 3, idEncargado: 4 },
   { id: 5, nombre: "Compras", idArea: 8, idEncargado: 5 },
@@ -14,7 +14,7 @@ let departamentos = [
   { id: 7, nombre: "Investigación", idArea: 9, idEncargado: 7 },
   { id: 8, nombre: "Comunicaciones", idArea: 6, idEncargado: 8 },
   { id: 9, nombre: "Laboratorios", idArea: 2, idEncargado: 9 },
-  { id: 10, nombre: "Central", idArea: 1, idEncargado: 10 },
+  { id: 10, nombre: "Central", idArea: 1, idEncargado: 10 },  
 ];
 let nextId = 11;
 
@@ -112,7 +112,7 @@ router.delete("/:id", (req, res) => {
   const dep = departamentos[depIndex];
 
   // 2. Verificar si tiene empleados asignados
-  const usadoPorEmpleado = empleados.some(e => e.idDepartamento == id);
+  const usadoPorEmpleado = empleados.some(e => e.idDepartamento.includes(id));
   if (usadoPorEmpleado) {
     return res.status(400).json({ message: "No se puede eliminar: el departamento tiene empleados asignados." });
   }
