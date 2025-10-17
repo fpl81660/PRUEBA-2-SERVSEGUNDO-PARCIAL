@@ -15,7 +15,7 @@ let encargados = [
 ];
 let nextId = 11;
 
-router.get("/", (req, res) => res.json(encargados));
+router.get("/", (req, res) => res.status(200).json(encargados));
 
 router.get("/:id", (req, res) => {
   const encargado = encargados.find(encargado => encargado.id == req.params.id);

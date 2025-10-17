@@ -17,12 +17,14 @@ let departamentos = [
 ];
 let nextId = 11;
 
-router.get("/", (req, res) => res.json(departamentos));
+router.get("/", (req, res) => {
+  res.status(200).json(departamentos);
+});
 
 router.get("/:id", (req, res) => {
   const departamento = departamentos.find(departamento => departamento.id == req.params.id);
   if (!departamento) return res.status(404).json({ message: "Departamento no encontrado" });
-  res.json(departamento);
+  res.status(200).json(departamento);
 });
 
 router.post("/", (req, res) => {
@@ -76,7 +78,7 @@ router.put("/:id", (req, res) => {
     departamento.idEncargado = idEncargado;
   }
 
-  res.json({ message: "Departamento actualizado", data: departamento });
+   return res.status(200).json({ message: "Departamento actualizado", data: departamento });
 });
 
 

@@ -16,7 +16,7 @@ let empleados = [
 ];
 let nextId = 11;
 
-router.get("/", (req, res) => res.json(empleados));
+router.get("/", (req, res) => res.status(200).json(empleados));
 
 router.get("/:id", (req, res) => {
   const empleado = empleados.find(empleado => empleado.id == req.params.id);

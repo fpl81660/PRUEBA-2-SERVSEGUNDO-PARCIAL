@@ -15,7 +15,7 @@ let areas = [
 ];
 let nextId = 11;
 
-router.get("/", (req, res) => res.json(areas));
+router.get("/", (req, res) => res.status(200).json(areas));
 
 router.get("/:id", (req, res) => {
   const area = areas.find(area => area.id == req.params.id);
@@ -41,7 +41,7 @@ router.put("/:id", (req, res) => {
   if (nombre) area.nombre = nombre;
   if (edificio) area.edificio = edificio;
 
-  res.json({ message: "Área actualizada", data: area });
+   res.status(200).json({ message: "Área actualizada", data: area });
 });
 
 router.delete("/:id", (req, res) => {
@@ -59,7 +59,7 @@ router.delete("/:id", (req, res) => {
   }
 
   areas.splice(areaIndex, 1);
-  res.json({ message: "Área eliminada correctamente" });
+   res.status(204).json({ message: "Área eliminada correctamente" });
 });
 
 module.exports = router;
