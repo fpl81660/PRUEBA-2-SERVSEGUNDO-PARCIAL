@@ -42,12 +42,8 @@ router.post("/", (req, res) => {
     }
   }
 
-  if (idDepartamento.length > 3 || idDepartamento.includes(0)) {
+  if (idDepartamento.length > 3) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
-  }
-
-  if (idDepartamento.includes(0)) {
-    return res.status(400).json({ message: "Un empleado no se le puede asignar un id " });
   }
 
   const nuevo = {
