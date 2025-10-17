@@ -24,11 +24,15 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
+    const { nombre, estudio, turno } = req.body;
+    if (!nombre || !estudio || !turno) {
+        return res.status(400).json({ message: "Los campos 'nombre', 'estudio' y 'turno' son obligatorios." });
+    }
   const nuevo = {
     id: nextId++,
-    nombre: req.body.nombre,
-    estudio: req.body.estudio,
-    turno: req.body.turno
+    nombre: nombre,
+    estudio: estudio,
+    turno: turno
   };
   encargados.push(nuevo);
   res.status(201).json({ message: "Encargado creado", data: nuevo });
@@ -38,12 +42,8 @@ router.put("/:id", (req, res) => {
   const encargado = encargados.find(encargado => encargado.id == req.params.id);
   if (!encargado) return res.status(404).json({ message: "Encargado no encontrado" });
 
-  const { id: nuevoId, nombre, estudio, turno } = req.body;
-  if (nuevoId && nuevoId !== encargado.id) {
-    const existe = encargados.some(encargado => encargado.id === nuevoId);
-    if (existe) return res.status(400).json({ message: "El ID ya existe" });
-    encargado.id = nuevoId;
-  }
+  const { nombre, estudio, turno } = req.body;
+
   if (nombre) encargado.nombre = nombre;
   if (estudio) encargado.estudio = estudio;
   if (turno) encargado.turno = turno;

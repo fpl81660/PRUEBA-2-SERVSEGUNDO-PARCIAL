@@ -25,6 +25,9 @@ router.get("/:id", (req, res) => {
 
 router.post("/", (req, res) => {
   const { nombre, edificio } = req.body;
+    if (!nombre) {
+    return res.status(400).json({ message: "El campo 'nombre' es obligatorio." });
+  }
   const nueva = { id: nextId++, nombre, edificio };
   areas.push(nueva);
   res.status(201).json({ message: "Área creada", data: nueva });
@@ -34,13 +37,7 @@ router.put("/:id", (req, res) => {
   const area = areas.find(area => area.id == req.params.id);
   if (!area) return res.status(404).json({ message: "Área no encontrada" });
 
-  const { id: nuevoId, nombre, edificio } = req.body;
-  if (nuevoId && nuevoId !== area.id) {
-    const existe = areas.some(area => area.id === nuevoId);
-    if (existe) return res.status(400).json({ message: "El ID ya existe" });
-    area.id = nuevoId;
-  }
-
+  const { nombre, edificio } = req.body;
   if (nombre) area.nombre = nombre;
   if (edificio) area.edificio = edificio;
 

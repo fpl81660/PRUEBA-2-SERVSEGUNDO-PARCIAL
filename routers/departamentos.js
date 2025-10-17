@@ -68,6 +68,8 @@ router.put("/:id", (req, res) => {
 
   if (nombre) departamento.nombre = nombre;
 
+
+
   if (req.body.hasOwnProperty('idArea')) {
     departamento.idArea = idArea;
   }

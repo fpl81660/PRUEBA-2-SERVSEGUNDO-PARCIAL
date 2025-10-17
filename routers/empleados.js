@@ -29,6 +29,19 @@ router.get("/:id", (req, res) => {
 router.post("/", (req, res) => {
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
+  if (!nombre || !apellido || !edad || !genero) {
+    return res.status(400).json({ message: "Los campos 'nombre', 'apellido', 'edad' y 'genero' son obligatorios." });
+  }
+  if (idDepartamento) {
+    const DepartamentosExistentes = idDepartamento
+      .filter(id => id !== null) // Filtramos los nulos primero
+      .every(id => departamentos.some(departamento => departamento.id === id));
+
+    if (!DepartamentosExistentes) {
+      return res.status(400).json({ message: "Uno o más de los idDepartamento no existen." });
+    }
+  }
+
   if (idDepartamento.length > 3 || idDepartamento.includes(0)) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
   }
@@ -56,8 +69,9 @@ router.put("/:id", (req, res) => {
 
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
+  
 
-// 👇 **LÓGICA SIMPLIFICADA** 👇
+
   if (idDepartamento) {
     const DepartamentosExistentes = idDepartamento
       .filter(id => id !== null) // Filtramos los nulos primero
