@@ -29,9 +29,9 @@ router.get("/:id", (req, res) => {
 
 
 router.post("/", (req, res) => {
-  const { nombre, idArea, idEncargado } = req.body;
+  const  { nombre, idArea, idEncargado } = req.body;
 
-  
+
   if (!nombre) {
     return res.status(400).json({ message: "El campo 'nombre' es obligatorio." });
   }

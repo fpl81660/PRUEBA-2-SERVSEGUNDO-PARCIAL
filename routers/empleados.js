@@ -31,8 +31,12 @@ router.post("/", (req, res) => {
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
   
-  if (idDepartamento.length > 3) {
+  if (idDepartamento.length > 3 || idDepartamento.includes(0)) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
+  }
+
+  if ( idDepartamento.includes(0)) {
+    return res.status(400).json({ message: "Un empleado no se le puede asignar un id " });
   }
 
   
@@ -56,8 +60,11 @@ router.put("/:id", (req, res) => {
 
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
+  if(idDepartamento.includes(0)){
+    return res.status(400).json({ message: "El atributo 'idDepartamento'" });
+  }
 
-  if (idDepartamento<1 && idDepartamento.length > 3) {
+  if ( idDepartamento.length > 3) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
   }
   
