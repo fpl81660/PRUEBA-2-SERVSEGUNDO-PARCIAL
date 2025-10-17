@@ -34,7 +34,7 @@ router.post("/", (req, res) => {
   }
   if (idDepartamento) {
     const DepartamentosExistentes = idDepartamento
-      .filter(id => id !== null) // Filtramos los nulos primero
+      .filter(id => id !== null) 
       .every(id => departamentos.some(departamento => departamento.id === id));
 
     if (!DepartamentosExistentes) {
@@ -70,7 +70,7 @@ router.put("/:id", (req, res) => {
 
   if (idDepartamento) {
     const DepartamentosExistentes = idDepartamento
-      .filter(id => id !== null) // Filtramos los nulos primero
+      .filter(id => id !== null) 
       .every(id => departamentos.some(departamento => departamento.id === id));
 
     if (!DepartamentosExistentes) {

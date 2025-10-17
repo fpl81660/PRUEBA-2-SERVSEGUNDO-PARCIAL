@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-let { empleados } = require("./empleados");
+// let { empleados } = require("./empleados"); // Elimina esta línea de aquí
 let { areas } = require("./areas");
 let { encargados } = require("./encargados");
 
@@ -18,6 +18,7 @@ let departamentos = [
 ];
 let nextId = 11;
 
+// Las rutas GET, POST y PUT no cambian...
 router.get("/", (req, res) => res.json(departamentos));
 
 router.get("/:id", (req, res) => {
@@ -80,7 +81,9 @@ router.put("/:id", (req, res) => {
   res.json({ message: "Departamento actualizado", data: departamento });
 });
 
+
 router.delete("/:id", (req, res) => {
+  const { empleados } = require("./empleados"); // Y muévela aquí adentro
   const id = parseInt(req.params.id);
   const departamentoIndex = departamentos.findIndex(departamento => departamento.id == id);
 
