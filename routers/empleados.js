@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router(); 
+let { departamentos } = require("./departamentos");
 
 let empleados = [
   { id: 1, nombre: "Ana", apellido: "Gómez", edad: 30, genero: "F", idDepartamento: [1, 2, null] },
@@ -60,8 +61,8 @@ router.put("/:id", (req, res) => {
 
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
-  if(idDepartamento.includes(0)){
-    return res.status(400).json({ message: "El atributo 'idDepartamento'" });
+  if (idDepartamento && !departamentos.some(dep => dep.id === idDepartamento)) {
+    return res.status(400).json({ message: "El idDepartamento no existe" });
   }
 
   if ( idDepartamento.length > 3) {
