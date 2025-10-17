@@ -6,7 +6,7 @@ let { encargados } = require("./encargados");
 
 let departamentos = [
   { id: 1, nombre: "Sistemas", idArea: 5, idEncargado: 1 },
-  { id: 2, nombre: "Finanzas", idArea: 4, idEncargado: 2 }, 
+  { id: 2, nombre: "Finanzas", idArea: 4, idEncargado: 2 },
   { id: 3, nombre: "Recursos Humanos", idArea: 9, idEncargado: 3 },
   { id: 4, nombre: "Administración", idArea: 3, idEncargado: 4 },
   { id: 5, nombre: "Compras", idArea: 8, idEncargado: 5 },
@@ -14,34 +14,30 @@ let departamentos = [
   { id: 7, nombre: "Investigación", idArea: 9, idEncargado: 7 },
   { id: 8, nombre: "Comunicaciones", idArea: 6, idEncargado: 8 },
   { id: 9, nombre: "Laboratorios", idArea: 2, idEncargado: 9 },
-  { id: 10, nombre: "Central", idArea: 1, idEncargado: 10 },  
+  { id: 10, nombre: "Central", idArea: 1, idEncargado: 10 },
 ];
 let nextId = 11;
 
-
 router.get("/", (req, res) => res.json(departamentos));
+
 router.get("/:id", (req, res) => {
-  const dep = departamentos.find(d => d.id == req.params.id);
-  if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
-  res.json(dep);
+  const departamento = departamentos.find(departamento => departamento.id == req.params.id);
+  if (!departamento) return res.status(404).json({ message: "Departamento no encontrado" });
+  res.json(departamento);
 });
 
-
-
 router.post("/", (req, res) => {
-  const  { nombre, idArea, idEncargado } = req.body;
-
+  const { nombre, idArea, idEncargado } = req.body;
 
   if (!nombre) {
     return res.status(400).json({ message: "El campo 'nombre' es obligatorio." });
   }
 
-  if (idArea && !areas.some(a => a.id === idArea)) {
+  if (idArea && !areas.some(area => area.id === idArea)) {
     return res.status(400).json({ message: "El idArea proporcionado no existe." });
   }
 
- 
-  if (idEncargado && !encargados.some(e => e.id === idEncargado)) {
+  if (idEncargado && !encargados.some(encargado => encargado.id === idEncargado)) {
     return res.status(400).json({ message: "El idEncargado proporcionado no existe." });
   }
 
@@ -56,56 +52,52 @@ router.post("/", (req, res) => {
   res.status(201).json({ message: "Departamento creado", data: nuevo });
 });
 
-
 router.put("/:id", (req, res) => {
-  const dep = departamentos.find(d => d.id == req.params.id);
-  if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
+  const departamento = departamentos.find(departamento => departamento.id == req.params.id);
+  if (!departamento) return res.status(404).json({ message: "Departamento no encontrado" });
 
   const { nombre, idArea, idEncargado } = req.body;
 
-  if (idArea && !areas.some(a => a.id === idArea)) {
+  if (idArea && !areas.some(area => area.id === idArea)) {
     return res.status(400).json({ message: "El idArea no existe" });
   }
-  
-  if (idEncargado && !encargados.some(e => e.id === idEncargado)) {
+
+  if (idEncargado && !encargados.some(encargado => encargado.id === idEncargado)) {
     return res.status(400).json({ message: "El idEncargado no existe" });
   }
 
-  
+  if (nombre) departamento.nombre = nombre;
 
-  if (nombre) dep.nombre = nombre;
-  
   if (req.body.hasOwnProperty('idArea')) {
-    dep.idArea = idArea;
+    departamento.idArea = idArea;
   }
   if (req.body.hasOwnProperty('idEncargado')) {
-    dep.idEncargado = idEncargado;
+    departamento.idEncargado = idEncargado;
   }
 
-  res.json({ message: "Departamento actualizado", data: dep });
+  res.json({ message: "Departamento actualizado", data: departamento });
 });
 
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const depIndex = departamentos.findIndex(d => d.id == id);
+  const departamentoIndex = departamentos.findIndex(departamento => departamento.id == id);
 
-  if (depIndex === -1) {
+  if (departamentoIndex === -1) {
     return res.status(404).json({ message: "Departamento no encontrado" });
   }
 
-  const dep = departamentos[depIndex];
+  const departamento = departamentos[departamentoIndex];
 
-  const usadoPorEmpleado = empleados.some(e => e.idDepartamento.includes(id));
+  const usadoPorEmpleado = empleados.some(empleado => empleado.idDepartamento.includes(id));
   if (usadoPorEmpleado) {
     return res.status(400).json({ message: "No se puede eliminar: el departamento tiene empleados asignados." });
   }
 
- 
-  if (dep.idEncargado) {
+  if (departamento.idEncargado) {
     return res.status(400).json({ message: "No se puede eliminar: el departamento ya tiene un encargado." });
   }
 
-  departamentos.splice(depIndex, 1);
+  departamentos.splice(departamentoIndex, 1);
   res.json({ message: "Departamento eliminado correctamente" });
 });
 

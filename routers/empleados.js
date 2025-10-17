@@ -1,5 +1,5 @@
 const express = require("express");
-const router = express.Router(); 
+const router = express.Router();
 let { departamentos } = require("./departamentos");
 
 let empleados = [
@@ -18,29 +18,25 @@ let nextId = 11;
 
 router.get("/", (req, res) => res.json(empleados));
 
-
 router.get("/:id", (req, res) => {
-  const emp = empleados.find(e => e.id == req.params.id);
-  if (!emp){ return res.status(404).json({ message: "Empleado no encontrado" });
+  const empleado = empleados.find(empleado => empleado.id == req.params.id);
+  if (!empleado) {
+    return res.status(404).json({ message: "Empleado no encontrado" });
   }
-   res.json(emp); 
+  res.json(empleado);
 });
-
-
 
 router.post("/", (req, res) => {
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
-  
   if (idDepartamento.length > 3 || idDepartamento.includes(0)) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
   }
 
-  if ( idDepartamento.includes(0)) {
+  if (idDepartamento.includes(0)) {
     return res.status(400).json({ message: "Un empleado no se le puede asignar un id " });
   }
 
-  
   const nuevo = {
     id: nextId++,
     nombre: nombre,
@@ -54,38 +50,43 @@ router.post("/", (req, res) => {
   res.status(201).json({ message: "Empleado creado", data: nuevo });
 });
 
-
 router.put("/:id", (req, res) => {
-  const emp = empleados.find(e => e.id == req.params.id);
-  if (!emp) return res.status(404).json({ message: "Empleado no encontrado" });
+  const empleado = empleados.find(empleado => empleado.id == req.params.id);
+  if (!empleado) return res.status(404).json({ message: "Empleado no encontrado" });
 
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
-  if (idDepartamento && !departamentos.some(dep => dep.id === idDepartamento)) {
-    return res.status(400).json({ message: "El idDepartamento no existe" });
-  }
 
-  if ( idDepartamento.length > 3) {
-    return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
+// 👇 **LÓGICA SIMPLIFICADA** 👇
+  if (idDepartamento) {
+    const DepartamentosExistentes = idDepartamento
+      .filter(id => id !== null) // Filtramos los nulos primero
+      .every(id => departamentos.some(departamento => departamento.id === id));
+
+    if (!DepartamentosExistentes) {
+      return res.status(400).json({ message: "Uno o más de los idDepartamento no existen." });
+    }
   }
   
+  if (idDepartamento.length > 3) {
+    return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
+  }
 
-  if (nombre) emp.nombre = nombre;
-  if (apellido) emp.apellido = apellido;
-  if (edad) emp.edad = edad;
-  if (genero) emp.genero = genero;
-  if (idDepartamento) emp.idDepartamento = idDepartamento;
+  if (nombre) empleado.nombre = nombre;
+  if (apellido) empleado.apellido = apellido;
+  if (edad) empleado.edad = edad;
+  if (genero) empleado.genero = genero;
+  if (idDepartamento) empleado.idDepartamento = idDepartamento;
 
-  res.json({ message: "Empleado actualizado", data: emp });
+  res.json({ message: "Empleado actualizado", data: empleado });
 });
-
 
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
-  const employeeIndex = empleados.findIndex(e => e.id == id);
+  const empleadoIndex = empleados.findIndex(empleado => empleado.id == id);
 
-  if (employeeIndex > -1) {
-    empleados.splice(employeeIndex, 1);
+  if (empleadoIndex > -1) {
+    empleados.splice(empleadoIndex, 1);
     res.json({ message: "Empleado eliminado correctamente" });
   } else {
     res.status(404).json({ message: "Empleado no encontrado" });

@@ -13,14 +13,14 @@ let encargados = [
   { id: 9, nombre: "Ernesto", estudio: "Ingeniero", turno: "Nocturno" },
   { id: 10, nombre: "Mónica", estudio: "Técnica", turno: "Matutino" },
 ];
-let nextId = 11; 
+let nextId = 11;
 
 router.get("/", (req, res) => res.json(encargados));
 
 router.get("/:id", (req, res) => {
-  const enc = encargados.find(e => e.id == req.params.id);
-  if (!enc) return res.status(404).json({ message: "Encargado no encontrado" });
-  res.json(enc);
+  const encargado = encargados.find(encargado => encargado.id == req.params.id);
+  if (!encargado) return res.status(404).json({ message: "Encargado no encontrado" });
+  res.json(encargado);
 });
 
 router.post("/", (req, res) => {
@@ -35,43 +35,40 @@ router.post("/", (req, res) => {
 });
 
 router.put("/:id", (req, res) => {
-  const enc = encargados.find(e => e.id == req.params.id);
-  if (!enc) return res.status(404).json({ message: "Encargado no encontrado" });
+  const encargado = encargados.find(encargado => encargado.id == req.params.id);
+  if (!encargado) return res.status(404).json({ message: "Encargado no encontrado" });
 
   const { id: nuevoId, nombre, estudio, turno } = req.body;
-  if (nuevoId && nuevoId !== enc.id) {
-    const existe = encargados.some(e => e.id === nuevoId);
+  if (nuevoId && nuevoId !== encargado.id) {
+    const existe = encargados.some(encargado => encargado.id === nuevoId);
     if (existe) return res.status(400).json({ message: "El ID ya existe" });
-    enc.id = nuevoId;
+    encargado.id = nuevoId;
   }
-  if (nombre) enc.nombre = nombre;
-  if (estudio) enc.estudio = estudio;
-  if (turno) enc.turno = turno;
+  if (nombre) encargado.nombre = nombre;
+  if (estudio) encargado.estudio = estudio;
+  if (turno) encargado.turno = turno;
 
-  res.json({ message: "Encargado actualizado", data: enc });
+  res.json({ message: "Encargado actualizado", data: encargado });
 });
 
 router.delete("/:id", (req, res) => {
   const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
 
-  const encIndex = encargados.findIndex(e => e.id == id);
+  const encargadoIndex = encargados.findIndex(encargado => encargado.id == id);
 
-  if (encIndex === -1) {
+  if (encargadoIndex === -1) {
     return res.status(404).json({ message: "Encargado no encontrado" });
   }
 
-  const usado = departamentos.some(d => d.idEncargado == id);
+  const usado = departamentos.some(departamento => departamento.idEncargado == id);
   if (usado) {
     return res.status(400).json({ message: "No se puede eliminar: encargado vinculado a un departamento" });
   }
 
-  encargados.splice(encIndex, 1);
+  encargados.splice(encargadoIndex, 1);
   res.json({ message: "Encargado eliminado correctamente" });
 });
-
-module.exports = router;
-module.exports.encargados = encargados;
 
 module.exports = router;
 module.exports.encargados = encargados;

@@ -13,34 +13,30 @@ let areas = [
   { id: 9, nombre: "Investigación", edificio: "I" },
   { id: 10, nombre: "Recursos Humanos", edificio: "J" },
 ];
-let nextId = 11; // 👈 Variable para el siguiente ID
+let nextId = 11;
 
-// GET todas
 router.get("/", (req, res) => res.json(areas));
 
-// GET por ID
 router.get("/:id", (req, res) => {
-  const area = areas.find(a => a.id == req.params.id);
+  const area = areas.find(area => area.id == req.params.id);
   if (!area) return res.status(404).json({ message: "Área no encontrada" });
   res.json(area);
 });
 
-// POST crear
 router.post("/", (req, res) => {
   const { nombre, edificio } = req.body;
-  const nueva = { id: nextId++, nombre, edificio }; // 👈 Lógica de ID autoincremental
+  const nueva = { id: nextId++, nombre, edificio };
   areas.push(nueva);
   res.status(201).json({ message: "Área creada", data: nueva });
 });
 
-// PUT actualizar (puede cambiar id y datos)
 router.put("/:id", (req, res) => {
-  const area = areas.find(a => a.id == req.params.id);
+  const area = areas.find(area => area.id == req.params.id);
   if (!area) return res.status(404).json({ message: "Área no encontrada" });
 
   const { id: nuevoId, nombre, edificio } = req.body;
   if (nuevoId && nuevoId !== area.id) {
-    const existe = areas.some(a => a.id === nuevoId);
+    const existe = areas.some(area => area.id === nuevoId);
     if (existe) return res.status(400).json({ message: "El ID ya existe" });
     area.id = nuevoId;
   }
@@ -51,18 +47,17 @@ router.put("/:id", (req, res) => {
   res.json({ message: "Área actualizada", data: area });
 });
 
-
 router.delete("/:id", (req, res) => {
   const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
 
-  const areaIndex = areas.findIndex(a => a.id == id);
+  const areaIndex = areas.findIndex(area => area.id == id);
 
   if (areaIndex === -1) {
     return res.status(404).json({ message: "Área no encontrada" });
   }
 
-  const usada = departamentos.some(d => d.idArea == id);
+  const usada = departamentos.some(departamento => departamento.idArea == id);
   if (usada) {
     return res.status(400).json({ message: "No se puede eliminar: área vinculada a departamentos" });
   }
@@ -70,7 +65,6 @@ router.delete("/:id", (req, res) => {
   areas.splice(areaIndex, 1);
   res.json({ message: "Área eliminada correctamente" });
 });
-
 
 module.exports = router;
 module.exports.areas = areas;
