@@ -18,7 +18,7 @@ let departamentos = [
 ];
 let nextId = 11;
 
-// CRUD
+
 router.get("/", (req, res) => res.json(departamentos));
 router.get("/:id", (req, res) => {
   const dep = departamentos.find(d => d.id == req.params.id);
@@ -26,27 +26,25 @@ router.get("/:id", (req, res) => {
   res.json(dep);
 });
 
-// routers/departamentos.js
+
 
 router.post("/", (req, res) => {
   const { nombre, idArea, idEncargado } = req.body;
 
-  // Validar que el nombre no esté vacío
+  
   if (!nombre) {
     return res.status(400).json({ message: "El campo 'nombre' es obligatorio." });
   }
 
-  // 1. Validar idArea solo si se proporciona
   if (idArea && !areas.some(a => a.id === idArea)) {
     return res.status(400).json({ message: "El idArea proporcionado no existe." });
   }
 
-  // 2. Validar idEncargado solo si se proporciona
+ 
   if (idEncargado && !encargados.some(e => e.id === idEncargado)) {
     return res.status(400).json({ message: "El idEncargado proporcionado no existe." });
   }
 
-  // 3. Crear el nuevo objeto, asignando null si los IDs no vienen
   const nuevo = {
     id: nextId++,
     nombre,
@@ -58,7 +56,6 @@ router.post("/", (req, res) => {
   res.status(201).json({ message: "Departamento creado", data: nuevo });
 });
 
-// routers/departamentos.js
 
 router.put("/:id", (req, res) => {
   const dep = departamentos.find(d => d.id == req.params.id);
@@ -66,17 +63,14 @@ router.put("/:id", (req, res) => {
 
   const { id: nuevoId, nombre, idArea, idEncargado } = req.body;
 
-  // Validar idArea solo si se proporciona y no es null
   if (idArea && !areas.some(a => a.id === idArea)) {
     return res.status(400).json({ message: "El idArea no existe" });
   }
   
-  // Validar idEncargado solo si se proporciona y no es null
   if (idEncargado && !encargados.some(e => e.id === idEncargado)) {
     return res.status(400).json({ message: "El idEncargado no existe" });
   }
 
-  // Lógica para actualizar el ID del departamento (se mantiene igual)
   if (nuevoId && nuevoId !== dep.id) {
     if (departamentos.some(d => d.id === nuevoId)) {
       return res.status(400).json({ message: "El ID ya existe" });
@@ -85,10 +79,8 @@ router.put("/:id", (req, res) => {
     dep.id = nuevoId;
   }
 
-  // Actualizar los campos
   if (nombre) dep.nombre = nombre;
   
-  // Usamos hasOwnProperty para permitir explícitamente asignar `null`
   if (req.body.hasOwnProperty('idArea')) {
     dep.idArea = idArea;
   }
@@ -98,32 +90,27 @@ router.put("/:id", (req, res) => {
 
   res.json({ message: "Departamento actualizado", data: dep });
 });
-// routers/departamentos.js
 
 router.delete("/:id", (req, res) => {
   const id = parseInt(req.params.id);
   const depIndex = departamentos.findIndex(d => d.id == id);
 
-  // 1. Verificar si el departamento existe
   if (depIndex === -1) {
     return res.status(404).json({ message: "Departamento no encontrado" });
   }
 
   const dep = departamentos[depIndex];
 
-  // 2. Verificar si tiene empleados asignados
   const usadoPorEmpleado = empleados.some(e => e.idDepartamento.includes(id));
   if (usadoPorEmpleado) {
     return res.status(400).json({ message: "No se puede eliminar: el departamento tiene empleados asignados." });
   }
 
-  // 3. ¡Nueva Verificación! Verificar si tiene un encargado
-  // Si 'idEncargado' tiene un valor (no es null o undefined), no se puede borrar.
+ 
   if (dep.idEncargado) {
     return res.status(400).json({ message: "No se puede eliminar: el departamento ya tiene un encargado." });
   }
 
-  // 4. Si pasa todas las validaciones, se elimina
   departamentos.splice(depIndex, 1);
   res.json({ message: "Departamento eliminado correctamente" });
 });

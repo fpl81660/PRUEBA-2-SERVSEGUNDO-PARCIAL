@@ -13,9 +13,8 @@ let encargados = [
   { id: 9, nombre: "Ernesto", estudio: "Ingeniero", turno: "Nocturno" },
   { id: 10, nombre: "Mónica", estudio: "Técnica", turno: "Matutino" },
 ];
-let nextId = 11; // 👈 Variable para el siguiente ID
+let nextId = 11; 
 
-// CRUD completo
 router.get("/", (req, res) => res.json(encargados));
 
 router.get("/:id", (req, res) => {
@@ -25,7 +24,6 @@ router.get("/:id", (req, res) => {
 });
 
 router.post("/", (req, res) => {
-  // Se crea el objeto sin el operador '...'
   const nuevo = {
     id: nextId++,
     nombre: req.body.nombre,
@@ -57,7 +55,6 @@ router.delete("/:id", (req, res) => {
   const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
 
-  // Se busca el índice en lugar del objeto
   const encIndex = encargados.findIndex(e => e.id == id);
 
   if (encIndex === -1) {
@@ -69,7 +66,6 @@ router.delete("/:id", (req, res) => {
     return res.status(400).json({ message: "No se puede eliminar: encargado vinculado a un departamento" });
   }
 
-  // Se usa splice para eliminar por índice
   encargados.splice(encIndex, 1);
   res.json({ message: "Encargado eliminado correctamente" });
 });

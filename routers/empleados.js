@@ -15,7 +15,6 @@ let empleados = [
 ];
 let nextId = 11;
 
-// CRUD completo
 router.get("/", (req, res) => res.json(empleados));
 
 
@@ -26,17 +25,17 @@ router.get("/:id", (req, res) => {
    res.json(emp); 
 });
 
-// ... (código anterior)
+
 
 router.post("/", (req, res) => {
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
-  // ✅ Validación para el límite de departamentos
-  if (idDepartamento && idDepartamento.length > 3) {
+  
+  if (idDepartamento.length > 3) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
   }
 
-  // Se crea el objeto manualmente
+  
   const nuevo = {
     id: nextId++,
     nombre: nombre,
@@ -50,7 +49,6 @@ router.post("/", (req, res) => {
   res.status(201).json({ message: "Empleado creado", data: nuevo });
 });
 
-// ... (El resto del código permanece igual)
 
 router.put("/:id", (req, res) => {
   const emp = empleados.find(e => e.id == req.params.id);
@@ -58,10 +56,11 @@ router.put("/:id", (req, res) => {
 
   const { nombre, apellido, edad, genero, idDepartamento } = req.body;
 
-  // ✅ Validación para el límite de departamentos
-  if (idDepartamento && idDepartamento.length > 3) {
+
+  if (idDepartamento<1 && idDepartamento.length > 3) {
     return res.status(400).json({ message: "Un empleado no puede estar asignado a más de 3 departamentos." });
   }
+  
 
   if (nombre) emp.nombre = nombre;
   if (apellido) emp.apellido = apellido;

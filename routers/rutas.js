@@ -6,7 +6,6 @@ const departamentosRouter = require("./departamentos");
 const empleadosRouter = require("./empleados");
 const encargadosRouter = require("./encargados");
 
-// Hacemos visibles los arreglos globalmente
 global.areas = areasRouter.areas;
 global.departamentos = departamentosRouter.departamentos;
 global.encargados = encargadosRouter.encargados;

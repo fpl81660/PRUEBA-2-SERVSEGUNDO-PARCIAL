@@ -51,15 +51,11 @@ router.put("/:id", (req, res) => {
   res.json({ message: "Área actualizada", data: area });
 });
 
-// DELETE solo si no afecta departamentos
-// ... (código anterior)
 
-// DELETE solo si no afecta departamentos
 router.delete("/:id", (req, res) => {
   const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
 
-  // Se busca el índice del área
   const areaIndex = areas.findIndex(a => a.id == id);
 
   if (areaIndex === -1) {
@@ -71,7 +67,6 @@ router.delete("/:id", (req, res) => {
     return res.status(400).json({ message: "No se puede eliminar: área vinculada a departamentos" });
   }
 
-  // Se elimina el área usando splice
   areas.splice(areaIndex, 1);
   res.json({ message: "Área eliminada correctamente" });
 });
