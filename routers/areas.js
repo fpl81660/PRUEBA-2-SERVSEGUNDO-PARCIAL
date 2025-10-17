@@ -45,7 +45,6 @@ router.put("/:id", (req, res) => {
 });
 
 router.delete("/:id", (req, res) => {
-  const { departamentos } = require("./departamentos");
   const id = parseInt(req.params.id);
 
   const areaIndex = areas.findIndex(area => area.id == id);
