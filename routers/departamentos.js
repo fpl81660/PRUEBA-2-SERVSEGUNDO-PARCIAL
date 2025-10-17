@@ -7,7 +7,7 @@ let { encargados } = require("./encargados");
 let departamentos = [
   { id: 1, nombre: "Sistemas", idArea: 5, idEncargado: 1 },
   { id: 2, nombre: "Finanzas", idArea: 4, idEncargado: 2 }, 
-  { id: 3, nombre: "Recursos Humanos", idArea: 10, idEncargado: 3 },
+  { id: 3, nombre: "Recursos Humanos", idArea: 9, idEncargado: 3 },
   { id: 4, nombre: "Administración", idArea: 3, idEncargado: 4 },
   { id: 5, nombre: "Compras", idArea: 8, idEncargado: 5 },
   { id: 6, nombre: "Producción", idArea: 7, idEncargado: 6 },
@@ -61,7 +61,7 @@ router.put("/:id", (req, res) => {
   const dep = departamentos.find(d => d.id == req.params.id);
   if (!dep) return res.status(404).json({ message: "Departamento no encontrado" });
 
-  const { id: nuevoId, nombre, idArea, idEncargado } = req.body;
+  const { nombre, idArea, idEncargado } = req.body;
 
   if (idArea && !areas.some(a => a.id === idArea)) {
     return res.status(400).json({ message: "El idArea no existe" });
@@ -71,13 +71,7 @@ router.put("/:id", (req, res) => {
     return res.status(400).json({ message: "El idEncargado no existe" });
   }
 
-  if (nuevoId && nuevoId !== dep.id) {
-    if (departamentos.some(d => d.id === nuevoId)) {
-      return res.status(400).json({ message: "El ID ya existe" });
-    }
-    empleados.forEach(e => { if(e.idDepartamento === dep.id) e.idDepartamento = nuevoId; });
-    dep.id = nuevoId;
-  }
+  
 
   if (nombre) dep.nombre = nombre;
   
